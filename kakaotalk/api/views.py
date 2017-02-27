@@ -56,7 +56,7 @@ def login_success(request):
     access_token = get_token값에서 access_token분리
     refresh_token = get_token값에서 refresh_token분리
     user_data = get_user_date()에서 access_token을 이용하여 서버에서 가져온 유저데이터를 dictionary형태로 리턴받음
-    :return:
+    :return: 닉네임, 프로필사진 URL
     """
     settings_file = kakao_server_settings()
     client_id = settings_file['client_id']
@@ -78,9 +78,13 @@ def login_success(request):
         # 유저데이터 가져오는 함수(id값 포함)에 access_token전달
         user_data = get_user_data(access_token)
         # DB를 저장하는 함수에 유저데이터, access_token, refresh_token전달
-        save_user(user_data, access_token, refresh_token)
+        user = save_user(user_data, access_token, refresh_token)
 
-        return render(request, 'api/success.html', context={'username': user_data['properties']['nickname']})
+        context = {
+            'username': user_data['properties']['nickname'],
+            'profile_image': user_data['properties']['profile_image']
+        }
+        return render(request, 'api/success.html', context)
 
     return render(request, 'api/index.html')
 
@@ -110,7 +114,6 @@ def get_tokens(client_id, redirect_uri, authorize_code):
         'refresh_token': get_user_token['refresh_token'],
     }
     # token dictionary 형태로 리턴
-    print(token)
     return token
 
 
@@ -125,7 +128,6 @@ def message_send_me(access_token):
         'Authorization': 'Bearer ' + access_token,
     }
     result = requests.post('https://kapi.kakao.com/v1/api/talk/memo/send', headers=header, params=params)
-    print(result)
     return result
 
 
@@ -141,7 +143,6 @@ def get_profile_data(access_token):
     }
     result = requests.get('https://kapi.kakao.com/v1/api/talk/profile', headers=header)
     profile_data = result.json()
-    print(profile_data)
 
 
 # 사용자 정보 가져오기(id값 포함)
@@ -156,6 +157,7 @@ def get_user_data(access_token):
     }
     user_data_json = requests.post('https://kapi.kakao.com/v1/user/me', headers=header)
     user_data = user_data_json.json()
+    print(user_data)
     return user_data
 
 
@@ -182,3 +184,5 @@ def save_user(user_data, access_token, refresh_token):
         user.access_token = access_token
         user.refresh_token = refresh_token
         user.save()
+
+    return user

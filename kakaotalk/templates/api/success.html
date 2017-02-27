@@ -1,5 +1,8 @@
 {% extends 'common/base.html' %}
 
 {% block content %}
+    {% if username %}
+    {{ username }}님이 로그인되었습니다.
+    {% endif %}
 
 {% endblock %}

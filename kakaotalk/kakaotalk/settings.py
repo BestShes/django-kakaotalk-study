@@ -20,6 +20,16 @@ TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 config_file_content = Path(__file__).parents[2].joinpath('.conf', 'settings_local.json').open().read()
 config = json.loads(config_file_content)
 
+# static path setting
+STATIC_URL = '/static/'
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIR = (
+    STATIC_DIR,
+)
+
+# Media path setting
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
@@ -42,6 +52,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'member',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -90,7 +102,7 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
-
+AUTH_USER_MODEL = 'member.MyUser'
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',

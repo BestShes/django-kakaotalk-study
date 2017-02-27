@@ -8,7 +8,6 @@ from django.shortcuts import render, redirect
 from kakaotalk import settings
 
 
-# 아직 테스트 하지 않음 카톡 셋팅을 따로 함수로 뽑아놓음
 def kakao_server_settings():
     config = settings.config
     settings_file = {
@@ -21,15 +20,11 @@ def kakao_server_settings():
 
 
 def login(request):
-    # kakao_server_settings()를 이용하여 셋팅설정을 한곳에 모은 후 리턴함 아직 테스트하지 않음
     settings_file = kakao_server_settings()
     client_id = settings_file['client_id']
     redirect_uri = settings_file['redirect_uri']
     response_type = settings_file['response_type']
-    # config = settings.config
-    # client_id = config['kakaotalk']['rest_api_key']
-    # redirect_uri = 'http://172.30.17.16:8000/kakaotalk/login/success'
-    # response_type = 'code'
+
     kakao_auth_url = 'https://kauth.kakao.com/oauth/authorize?client_id={client_id}&redirect_uri={redirect_uri}&response_type={response_type}'.format(
         client_id=client_id,
         redirect_uri=redirect_uri,
@@ -45,16 +40,11 @@ def login(request):
 
 # 카카오톡 로그인 성공후 이쪽으로 redirect됨
 def login_success(request):
-    # kakao_server_settings()를 이용하여 셋팅설정을 한곳에 모은 후 리턴함 아직 테스트하지 않음
     settings_file = kakao_server_settings()
     client_id = settings_file['client_id']
     redirect_uri = settings_file['redirect_uri']
     response_type = settings_file['response_type']
-    # config = settings.config
-    # client_id = config['kakaotalk']['rest_api_key']
-    # redirect_uri = 'http://172.30.17.16:8000/kakaotalk/login/success'
-    # response_type = 'code'
-    # 카카오톡 로그인에 성공하면 지정한 redirec_uri로 GET방식으로 code이름에 authorize_code값이 넘어옴
+
     if request.GET.get('code'):
         authorize_code = request.GET.get('code')
         # get_access_token 함수에 authorize_code를 넘김
